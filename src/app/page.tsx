@@ -36,7 +36,7 @@ export default function HomePage() {
             교육영상
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 15 }}>
-            동진토건 현장 안전 및 교육 영상 모음
+            현장 안전 및 교육 영상 모음
           </p>
         </div>
 
