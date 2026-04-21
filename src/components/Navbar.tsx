@@ -57,7 +57,7 @@ export default function Navbar() {
               <polygon points="5,3 19,12 5,21" />
             </svg>
           </div>
-          <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--text-primary)' }}>동진 교육영상</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--text-primary)' }}>교육영상</span>
         </Link>
         <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {navLink('/', '영상 목록')}
