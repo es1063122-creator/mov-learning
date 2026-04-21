@@ -6,8 +6,6 @@ import { VideoItem } from '@/types/video';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'dongjin2024';
-
 function formatDate(iso?: string) {
   if (!iso) return '-';
   return new Date(iso).toLocaleDateString('ko-KR', {
@@ -16,25 +14,15 @@ function formatDate(iso?: string) {
 }
 
 export default function AdminPage() {
-  const [password, setPassword] = useState('');
-  const [authed, setAuthed] = useState(false);
-  const [authError, setAuthError] = useState('');
-
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
-      setAuthed(true);
-      setAuthError('');
-      loadVideos();
-    } else {
-      setAuthError('비밀번호가 올바르지 않습니다.');
-    }
-  };
+  useEffect(() => {
+    loadVideos();
+  }, []);
 
   const loadVideos = async () => {
     setLoading(true);
@@ -115,92 +103,40 @@ export default function AdminPage() {
               영상 공개/비공개 전환 및 삭제
             </p>
           </div>
-          {authed && (
-            <Link href="/upload" style={{
-              padding: '10px 20px',
-              background: 'var(--accent)',
-              color: '#fff',
-              borderRadius: 'var(--radius)',
-              fontSize: 14,
-              fontWeight: 600,
-            }}>
-              + 새 영상 업로드
-            </Link>
-          )}
+          <Link href="/upload" style={{
+            padding: '10px 20px',
+            background: 'var(--accent)',
+            color: '#fff',
+            borderRadius: 'var(--radius)',
+            fontSize: 14,
+            fontWeight: 600,
+          }}>
+            + 새 영상 업로드
+          </Link>
         </div>
 
-        {/* 인증 */}
-        {!authed ? (
+        {loading && (
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '60px' }}>불러오는 중...</p>
+        )}
+
+        {error && (
           <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
+            background: 'rgba(239,68,68,0.1)',
+            border: '1px solid var(--danger)',
             borderRadius: 'var(--radius)',
-            padding: '40px',
-            maxWidth: 400,
-            margin: '0 auto',
+            padding: '16px 20px',
+            color: 'var(--danger)',
+            marginBottom: 24,
           }}>
-            <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: 'var(--text-primary)' }}>
-              🔒 관리자 인증
-            </h2>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-              placeholder="비밀번호를 입력하세요"
-              style={{
-                width: '100%',
-                background: 'var(--bg)',
-                border: '1px solid var(--border-strong)',
-                borderRadius: 'var(--radius-sm)',
-                color: 'var(--text-primary)',
-                padding: '10px 14px',
-                fontSize: 14,
-                outline: 'none',
-                marginBottom: 12,
-              }}
-            />
-            {authError && (
-              <p style={{ color: 'var(--danger)', fontSize: 13, marginBottom: 12 }}>{authError}</p>
-            )}
-            <button onClick={handleLogin} style={{
-              width: '100%',
-              padding: '12px',
-              background: 'var(--accent)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}>
-              확인
-            </button>
+            {error}
           </div>
-        ) : (
-          <>
-            {loading && (
-              <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '60px' }}>불러오는 중...</p>
-            )}
+        )}
 
-            {error && (
-              <div style={{
-                background: 'rgba(239,68,68,0.1)',
-                border: '1px solid var(--danger)',
-                borderRadius: 'var(--radius)',
-                padding: '16px 20px',
-                color: 'var(--danger)',
-                marginBottom: 24,
-              }}>
-                {error}
-              </div>
-            )}
-
-            {!loading && videos.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
-                업로드된 영상이 없습니다.
-              </div>
-            )}
+        {!loading && videos.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
+            업로드된 영상이 없습니다.
+          </div>
+        )}
 
             {!loading && videos.length > 0 && (
               <>
@@ -337,8 +273,6 @@ export default function AdminPage() {
                 </div>
               </>
             )}
-          </>
-        )}
       </main>
     </>
   );
