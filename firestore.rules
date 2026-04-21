@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // videos 컬렉션
+    match /videos/{videoId} {
+      // 공개된 영상은 누구나 읽기 가능
+      allow read: if resource.data.isPublished == true;
+
+      // 비공개 영상 포함 전체 읽기는 로그인 사용자만 (추후 관리자 인증 붙이면 조건 강화)
+      // 현재는 임시로 전체 읽기 허용 (관리자 페이지용)
+      allow read: if true;
+
+      // 쓰기는 추후 관리자 인증 후 제한 예정
+      // 현재는 클라이언트 직접 쓰기 허용 (개발 단계)
+      allow write: if true;
+    }
+
+    // siteConfig
+    match /siteConfig/{doc} {
+      allow read: if true;
+      allow write: if false; // 콘솔에서만 수정
+    }
+  }
+}

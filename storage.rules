@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // 영상 파일
+    match /videos/{allPaths=**} {
+      // 누구나 읽기 가능 (스트리밍용)
+      allow read: if true;
+      // 쓰기/삭제: 현재는 허용, 추후 관리자 인증으로 제한
+      allow write, delete: if true;
+    }
+
+    // 썸네일
+    match /thumbnails/{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if true;
+    }
+  }
+}
